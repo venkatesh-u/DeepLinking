@@ -8,8 +8,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.6.1",
     "react": "16.8.6",
     "react-native": "0.60.5",
+    "react-native-firebase": "^5.5.5",
     "react-native-gesture-handler": "^1.4.1",
     "react-navigation": "^4.0.0",
     "react-navigation-stack": "^1.5.1"

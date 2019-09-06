@@ -24,6 +24,9 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import firebase from 'react-native-firebase';
+import AsyncStorage from '@react-native-community/async-storage';
+
 class App extends Component{
 
 componentDidMount(){
@@ -32,13 +35,78 @@ componentDidMount(){
           this.navigate(url);
 
        });
- Linking.addEventListener('url', this._handleOpenURL);
+    Linking.addEventListener('url', this._handleOpenURL);
+
+    this.firebaseSetUp();
+}
+
+  componentWillUnmount() {
+     Linking.removeEventListener('url', this._handleOpenURL);
+  }
+
+
+   firebaseSetUp(){
+       const channel = new firebase.notifications.Android.Channel('insider', 'insider channel', firebase.notifications.Android.Importance.Max)
+       firebase.notifications().android.createChannel(channel);
+       this.checkPermission();
+       this.createNotificationListeners();
+   }
+
+
+async checkPermission() {
+    const enabled = await firebase.messaging().hasPermission();
+    if (enabled) {
+        this.getToken();
+    } else {
+        this.requestPermission();
+    }
+}
+
+async createNotificationListeners() {
+
+    firebase.notifications().onNotification(notification => {
+        notification.android.setChannelId('insider').setSound('default')
+        firebase.notifications().displayNotification(notification)
+    });
+
+    firebase.notifications().onNotificationOpened((notificationOpen) => {
+          this.onPressNotification(notificationOpen.notification.data);
+          firebase.notifications().removeDeliveredNotification(notificationOpen.notification.notificationId)
+      });
+
+   const notificationOpen = await firebase.notifications().getInitialNotification();
+        if (notificationOpen) {
+          this.onPressNotification(notificationOpen.notification.data);
+          firebase.notifications().removeDeliveredNotification(notificationOpen.notification.notificationId)
+        }
 }
 
 
- componentWillUnmount() {
-     Linking.removeEventListener('url', this._handleOpenURL);
-  }
+ onPressNotification(data){
+     alert(JSON.stringify(data));
+ }
+
+async getToken() {
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+               console.log("fcmToken:  "+ fcmToken);
+    if (!fcmToken) {
+        fcmToken = await firebase.messaging().getToken();
+        if (fcmToken) {
+            await AsyncStorage.setItem('fcmToken', fcmToken);
+        }
+    }
+}
+
+async requestPermission() {
+    try {
+        await firebase.messaging().requestPermission();
+        this.getToken();
+    } catch (error) {
+        console.log('permission rejected');
+    }
+}
+
+
 
 _handleOpenURL =(event)=> {
   console.log("_handleOpenURL: "+event.url);
