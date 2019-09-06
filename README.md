@@ -1,3 +1,2 @@
 # DeepLinking
-DeepLinking
-push notifications RN > 0.60V
+# push notifications RN > 0.60V
