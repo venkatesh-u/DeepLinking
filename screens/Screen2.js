@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React, {Fragment} from 'react';
+import React, {Fragment, Component} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -25,12 +25,19 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 
-const Screen2 = () => {
+class Screen2 extends Component{
 
-    Screen2.navigationOptions={
-        headerTitle:'Screen2'
+    constructor(props){
+        super(props)
+        const {navigation} = props;
+        alert("Data: "+ JSON.stringify(navigation.getParam('notification_data', null)) );
+
     }
 
+    static navigationOptions={
+        headerTitle:'Screen2'
+    }
+render(){
   return (
     <Fragment>
       <StatusBar barStyle="dark-content" />
@@ -58,6 +65,7 @@ const Screen2 = () => {
       </SafeAreaView>
     </Fragment>
   );
+  }
 };
 
 const styles = StyleSheet.create({

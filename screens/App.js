@@ -74,7 +74,7 @@ async createNotificationListeners() {
           firebase.notifications().removeDeliveredNotification(notificationOpen.notification.notificationId)
       });
 
-   const notificationOpen = await firebase.notifications().getInitialNotification();
+    const notificationOpen = await firebase.notifications().getInitialNotification();
         if (notificationOpen) {
           this.onPressNotification(notificationOpen.notification.data);
           firebase.notifications().removeDeliveredNotification(notificationOpen.notification.notificationId)
@@ -83,7 +83,7 @@ async createNotificationListeners() {
 
 
  onPressNotification(data){
-     alert(JSON.stringify(data));
+    this.props.navigation.navigate( 'B', {'notification_data':data} );
  }
 
 async getToken() {

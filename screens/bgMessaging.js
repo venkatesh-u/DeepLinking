@@ -3,6 +3,7 @@ import firebase from 'react-native-firebase';
 import {Linking, ToastAndroid} from 'react-native';
 
 /// When Application is in Background to recieve a notification.
+//This file is not in usage
 
 export default async (message: RemoteMessage) => {
     // handle your message
