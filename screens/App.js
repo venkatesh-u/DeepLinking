@@ -67,6 +67,21 @@ async createNotificationListeners() {
     firebase.notifications().onNotification(notification => {
         notification.android.setChannelId('insider').setSound('default')
         firebase.notifications().displayNotification(notification)
+
+
+       AsyncStorage.getItem('IsNotificationScreenFocussed', (err, value) => {
+           if (err) {
+               console.log(err)
+           } else {
+               console.log(JSON.parse(value)) // boolean false
+               if(JSON.parse(value)){
+                    this.onPressNotification(notification.data);
+                     console.log("Data: "+JSON.stringify(notification.data));
+               }
+
+           }
+       })
+
     });
 
     firebase.notifications().onNotificationOpened((notificationOpen) => {

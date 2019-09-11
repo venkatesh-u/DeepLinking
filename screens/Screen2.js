@@ -23,20 +23,48 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-
+import AsyncStorage from '@react-native-community/async-storage';
 
 class Screen2 extends Component{
+
+    state={}
 
     constructor(props){
         super(props)
         const {navigation} = props;
+
         alert("Data: "+ JSON.stringify(navigation.getParam('notification_data', null)) );
 
     }
 
-    static navigationOptions={
-        headerTitle:'Screen2'
+
+    componentDidMount(){
+       this.focusListener =  this.props.navigation.addListener('didFocus', () => {
+              // The screen is focused
+              // Call any action
+              console.log("DidFocus: "+ "true");
+              AsyncStorage.setItem('IsNotificationScreenFocussed', JSON.stringify(true) )
+            });
     }
+
+
+    componentWillUnmount(){
+          AsyncStorage.setItem('IsNotificationScreenFocussed', JSON.stringify(false))
+          this.focusListener.remove();
+    }
+
+    static navigationOptions={
+        headerTitle:'Notifications'
+    }
+
+
+   static getDerivedStateFromProps(props, state){
+        alert("getDerivedStateFromProps: "+ JSON.stringify(props));
+
+            // Return null if the state hasn't changed
+            return null;
+    }
+
 render(){
   return (
     <Fragment>
